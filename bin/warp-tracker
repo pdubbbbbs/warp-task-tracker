@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+
+const { program } = require('commander');
+const TaskTracker = require('../src/TaskTracker');
+const { version } = require('../package.json');
+
+program
+  .version(version)
+  .description('A real-time task completion percentage tracker for Warp terminal');
+
+program
+  .command('start <taskName>')
+  .description('Start tracking a new task')
+  .option('-d, --description <desc>', 'Task description')
+  .action((taskName, options) => {
+    const tracker = new TaskTracker();
+    tracker.startTask(taskName, options.description);
+  });
+
+program
+  .command('update <percentage>')
+  .description('Update task completion percentage')
+  .option('-m, --message <msg>', 'Progress update message')
+  .action((percentage, options) => {
+    const tracker = new TaskTracker();
+    tracker.updateProgress(parseInt(percentage), options.message);
+  });
+
+program
+  .command('status')
+  .description('Show current task status')
+  .action(() => {
+    const tracker = new TaskTracker();
+    tracker.showStatus();
+  });
+
+program
+  .command('complete')
+  .description('Mark current task as complete')
+  .option('-m, --message <msg>', 'Completion message')
+  .action((options) => {
+    const tracker = new TaskTracker();
+    tracker.completeTask(options.message);
+  });
+
+program
+  .command('stop')
+  .description('Stop tracking current task without completing')
+  .action(() => {
+    const tracker = new TaskTracker();
+    tracker.stopTask();
+  });
+
+program
+  .command('history')
+  .description('Show task completion history')
+  .option('-n, --number <count>', 'Number of recent tasks to show', '10')
+  .action((options) => {
+    const tracker = new TaskTracker();
+    tracker.showHistory(parseInt(options.number));
+  });
+
+program
+  .command('config')
+  .description('Show or update configuration')
+  .option('-s, --set <key=value>', 'Set a configuration value')
+  .action((options) => {
+    const tracker = new TaskTracker();
+    tracker.handleConfig(options);
+  });
+
+program.parse(process.argv);
+
+// Show help if no command is provided
+if (!process.argv.slice(2).length) {
+  program.outputHelp();
+}

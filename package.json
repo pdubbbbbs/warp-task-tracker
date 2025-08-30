@@ -1,0 +1,52 @@
+{
+  "name": "warp-task-tracker",
+  "version": "1.0.0",
+  "description": "A real-time task completion percentage tracker for Warp terminal sessions",
+  "main": "src/index.js",
+  "bin": {
+    "warp-tracker": "./bin/warp-tracker"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "lint": "eslint src/",
+    "build": "pkg . --out-path dist/"
+  },
+  "keywords": [
+    "warp",
+    "terminal",
+    "task-tracking",
+    "progress",
+    "cli",
+    "productivity"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.0.0",
+    "inquirer": "^9.2.12",
+    "boxen": "^7.1.1",
+    "cli-progress": "^3.12.0",
+    "node-notifier": "^10.0.1",
+    "fs-extra": "^11.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.50.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "pkg": "^5.8.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/[USERNAME]/warp-task-tracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/[USERNAME]/warp-task-tracker/issues"
+  },
+  "homepage": "https://github.com/[USERNAME]/warp-task-tracker#readme"
+}
