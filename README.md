@@ -18,7 +18,7 @@ This application displays the completion percentage of your current task directl
 
 ```bash
 # Clone the repository
-git clone https://github.com/[USERNAME]/warp-task-tracker.git
+git clone https://github.com/pdubbbbbs/warp-task-tracker.git
 cd warp-task-tracker
 
 # Install dependencies

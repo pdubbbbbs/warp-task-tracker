@@ -43,10 +43,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/[USERNAME]/warp-task-tracker.git"
+    "url": "https://github.com/pdubbbbbs/warp-task-tracker.git"
   },
   "bugs": {
-    "url": "https://github.com/[USERNAME]/warp-task-tracker/issues"
+    "url": "https://github.com/pdubbbbbs/warp-task-tracker/issues"
   },
-  "homepage": "https://github.com/[USERNAME]/warp-task-tracker#readme"
+  "homepage": "https://github.com/pdubbbbbs/warp-task-tracker#readme"
 }
