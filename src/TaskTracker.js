@@ -4,12 +4,15 @@ const chalk = require('chalk');
 const boxen = require('boxen');
 const cliProgress = require('cli-progress');
 const notifier = require('node-notifier');
+const WarpSessionManager = require('./WarpSessionManager');
 
 class TaskTracker {
   constructor() {
     this.configDir = path.join(process.env.HOME, '.warp-tracker');
     this.dataFile = path.join(this.configDir, 'tasks.json');
     this.configFile = path.join(this.configDir, 'config.json');
+    this.sessionManager = new WarpSessionManager();
+    this.activeTasks = new Map(); // sessionId -> taskData
     this.initializeData();
   }
 
@@ -312,6 +315,256 @@ class TaskTracker {
       return `${hours}h ${minutes}m`;
     }
     return `${minutes}m`;
+  }
+
+  // ===== AUTOMATIC TASK MANAGEMENT =====
+
+  /**
+   * Scan for Warp sessions and auto-create tasks
+   */
+  async scanAndCreateTasks() {
+    try {
+      const changes = await this.sessionManager.detectSessionChanges();
+      
+      // Create tasks for new sessions
+      for (const session of changes.newSessions) {
+        await this.createTaskForSession(session);
+      }
+
+      // Clean up tasks for closed sessions
+      for (const sessionId of changes.closedSessions) {
+        await this.handleClosedSession(sessionId);
+      }
+
+      return {
+        newTasks: changes.newSessions.length,
+        closedTasks: changes.closedSessions.length,
+        allSessions: changes.allSessions
+      };
+    } catch (error) {
+      console.error('Error scanning for tasks:', error);
+      return { newTasks: 0, closedTasks: 0, allSessions: [] };
+    }
+  }
+
+  /**
+   * Create a task for a new Warp session
+   */
+  async createTaskForSession(session) {
+    try {
+      // Check if we already have a task for this session
+      if (this.activeTasks.has(session.sessionId)) {
+        return this.activeTasks.get(session.sessionId);
+      }
+
+      const newTask = {
+        id: `${session.sessionId}_${Date.now()}`,
+        name: session.taskName,
+        description: `Auto-generated task for ${session.projectName}\nWorking directory: ${session.workingDir}`,
+        startTime: new Date().toISOString(),
+        progress: 0,
+        updates: [],
+        status: 'in-progress',
+        sessionId: session.sessionId,
+        sessionInfo: {
+          windowId: session.windowId,
+          projectName: session.projectName,
+          workingDir: session.workingDir,
+          title: session.title
+        }
+      };
+
+      // Add to active tasks map
+      this.activeTasks.set(session.sessionId, newTask);
+
+      const config = await this.loadConfig();
+      if (config.notifications) {
+        notifier.notify({
+          title: 'Warp Task Tracker',
+          message: `Auto-created task: ${session.taskName}`,
+          icon: path.join(__dirname, '../assets/icon.png')
+        });
+      }
+
+      return newTask;
+    } catch (error) {
+      console.error('Error creating task for session:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Handle a closed Warp session
+   */
+  async handleClosedSession(sessionId) {
+    try {
+      const task = this.activeTasks.get(sessionId);
+      if (!task) return;
+
+      // Mark task as stopped and move to history
+      task.endTime = new Date().toISOString();
+      task.status = 'stopped';
+
+      const data = await this.loadData();
+      data.history.unshift(task);
+      
+      // If this was the current task, clear it
+      if (data.currentTask && data.currentTask.sessionId === sessionId) {
+        data.currentTask = null;
+      }
+
+      await this.saveData(data);
+      this.activeTasks.delete(sessionId);
+
+      const config = await this.loadConfig();
+      if (config.notifications) {
+        notifier.notify({
+          title: 'Warp Task Tracker',
+          message: `Task auto-stopped: ${task.name}`,
+          icon: path.join(__dirname, '../assets/icon.png')
+        });
+      }
+    } catch (error) {
+      console.error('Error handling closed session:', error);
+    }
+  }
+
+  /**
+   * Get all active session-based tasks
+   */
+  getActiveSessionTasks() {
+    return Array.from(this.activeTasks.values());
+  }
+
+  /**
+   * Get task for a specific session
+   */
+  getTaskForSession(sessionId) {
+    return this.activeTasks.get(sessionId);
+  }
+
+  /**
+   * Update progress for a specific session task
+   */
+  async updateSessionTaskProgress(sessionId, percentage, message = '') {
+    const task = this.activeTasks.get(sessionId);
+    if (!task) {
+      throw new Error(`No task found for session ${sessionId}`);
+    }
+
+    if (percentage < 0 || percentage > 100) {
+      throw new Error('Progress percentage must be between 0 and 100');
+    }
+
+    const previousProgress = task.progress;
+    task.progress = percentage;
+    task.updates.push({
+      timestamp: new Date().toISOString(),
+      progress: percentage,
+      message
+    });
+
+    // Update the active task
+    this.activeTasks.set(sessionId, task);
+
+    // Also update in data if this is the current task
+    const data = await this.loadData();
+    if (data.currentTask && data.currentTask.sessionId === sessionId) {
+      data.currentTask = task;
+      await this.saveData(data);
+    }
+
+    const config = await this.loadConfig();
+    const change = percentage - previousProgress;
+    if (config.notifications && change >= 25) {
+      notifier.notify({
+        title: 'Warp Task Tracker',
+        message: `${task.name}: ${percentage}% complete`,
+        icon: path.join(__dirname, '../assets/icon.png')
+      });
+    }
+
+    return task;
+  }
+
+  /**
+   * Set the current active task from session tasks
+   */
+  async setCurrentTaskFromSession(sessionId) {
+    const task = this.activeTasks.get(sessionId);
+    if (!task) {
+      throw new Error(`No task found for session ${sessionId}`);
+    }
+
+    const data = await this.loadData();
+    data.currentTask = task;
+    await this.saveData(data);
+
+    return task;
+  }
+
+  /**
+   * Get current task or suggest one based on active Warp session
+   */
+  async getCurrentOrSuggestedTask() {
+    const data = await this.loadData();
+    
+    if (data.currentTask) {
+      return { type: 'current', task: data.currentTask };
+    }
+
+    // Try to get the active Warp session
+    const activeSession = await this.sessionManager.getActiveWarpSession();
+    if (activeSession) {
+      const suggestedTask = this.activeTasks.get(activeSession.sessionId);
+      if (suggestedTask) {
+        return { type: 'suggested', task: suggestedTask, session: activeSession };
+      }
+    }
+
+    // Return first active task if any
+    const activeTasks = this.getActiveSessionTasks();
+    if (activeTasks.length > 0) {
+      return { type: 'suggested', task: activeTasks[0] };
+    }
+
+    return { type: 'none', task: null };
+  }
+
+  /**
+   * Start session monitoring for automatic task management
+   */
+  startAutoTaskManagement(callback) {
+    this.sessionManager.startSessionMonitoring(async (changes) => {
+      const result = {
+        newTasks: [],
+        closedTasks: []
+      };
+
+      // Create tasks for new sessions
+      for (const session of changes.newSessions) {
+        const task = await this.createTaskForSession(session);
+        if (task) result.newTasks.push(task);
+      }
+
+      // Handle closed sessions
+      for (const sessionId of changes.closedSessions) {
+        const task = this.activeTasks.get(sessionId);
+        if (task) result.closedTasks.push(task);
+        await this.handleClosedSession(sessionId);
+      }
+
+      if (callback) {
+        callback(result);
+      }
+    });
+  }
+
+  /**
+   * Stop automatic task management
+   */
+  stopAutoTaskManagement() {
+    this.sessionManager.stopSessionMonitoring();
   }
 }
 

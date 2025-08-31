@@ -1,0 +1,561 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    background: #1e1e2e;
+    color: #cdd6f4;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #11111b;
+    border-bottom: 1px solid #313244;
+    -webkit-app-region: drag;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.app-icon {
+    font-size: 20px;
+}
+
+.app-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #89b4fa;
+}
+
+.header-controls {
+    display: flex;
+    gap: 8px;
+    -webkit-app-region: no-drag;
+}
+
+.btn-icon {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    background: #313244;
+    color: #cdd6f4;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+    transition: background-color 0.2s;
+}
+
+.btn-icon:hover {
+    background: #45475a;
+}
+
+#closeBtn:hover {
+    background: #f38ba8;
+    color: #1e1e2e;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.section-header h2 {
+    font-size: 18px;
+    color: #f9e2af;
+    font-weight: 600;
+}
+
+/* Task Switcher */
+.task-switcher {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.task-select {
+    background: #313244;
+    border: 1px solid #45475a;
+    border-radius: 6px;
+    color: #cdd6f4;
+    padding: 6px 10px;
+    font-size: 14px;
+    min-width: 180px;
+    max-width: 250px;
+}
+
+.task-select:focus {
+    outline: none;
+    border-color: #89b4fa;
+}
+
+.task-select option {
+    background: #313244;
+    color: #cdd6f4;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    background: #89b4fa;
+    color: #1e1e2e;
+}
+
+.btn-primary:hover {
+    background: #74c7ec;
+}
+
+.btn-secondary {
+    background: #6c7086;
+    color: #cdd6f4;
+}
+
+.btn-secondary:hover {
+    background: #7f849c;
+}
+
+.btn-success {
+    background: #a6e3a1;
+    color: #1e1e2e;
+}
+
+.btn-success:hover {
+    background: #94e2d5;
+}
+
+.btn-warning {
+    background: #f9e2af;
+    color: #1e1e2e;
+}
+
+.btn-warning:hover {
+    background: #fab387;
+}
+
+/* Current Task */
+.current-task {
+    background: #181825;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #313244;
+    margin-bottom: 20px;
+}
+
+.no-task {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c7086;
+}
+
+.no-task-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.task-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.task-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.task-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #cdd6f4;
+}
+
+.task-description {
+    font-size: 14px;
+    color: #9399b2;
+    line-height: 1.4;
+}
+
+.task-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #6c7086;
+}
+
+.progress-section {
+    margin-top: 16px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #313244;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #89b4fa, #74c7ec);
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Task Controls */
+.task-controls {
+    background: #181825;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #313244;
+    margin-bottom: 20px;
+}
+
+.progress-input {
+    margin-bottom: 16px;
+}
+
+.progress-input label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #f9e2af;
+}
+
+.progress-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#progressSlider {
+    flex: 1;
+    height: 6px;
+    background: #313244;
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+#progressSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #89b4fa;
+    cursor: pointer;
+}
+
+.progress-value {
+    font-weight: 600;
+    color: #89b4fa;
+    min-width: 40px;
+    text-align: right;
+}
+
+.progress-message {
+    margin-bottom: 20px;
+}
+
+.progress-message label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #f9e2af;
+}
+
+.progress-message input {
+    width: 100%;
+    padding: 10px 12px;
+    background: #313244;
+    border: 1px solid #45475a;
+    border-radius: 6px;
+    color: #cdd6f4;
+    font-size: 14px;
+}
+
+.progress-message input:focus {
+    outline: none;
+    border-color: #89b4fa;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Task History */
+.task-history {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: #181825;
+    border-radius: 8px;
+    border: 1px solid #313244;
+    transition: background-color 0.2s;
+}
+
+.history-item:hover {
+    background: #1e1e2e;
+}
+
+.history-status {
+    margin-right: 12px;
+    font-size: 16px;
+}
+
+.history-content {
+    flex: 1;
+}
+
+.history-name {
+    font-weight: 500;
+    color: #cdd6f4;
+    margin-bottom: 2px;
+}
+
+.history-meta {
+    font-size: 12px;
+    color: #6c7086;
+}
+
+.history-progress {
+    margin-left: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mini-progress-bar {
+    width: 60px;
+    height: 4px;
+    background: #313244;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.mini-progress-fill {
+    height: 100%;
+    background: #a6e3a1;
+    transition: width 0.3s ease;
+}
+
+.history-progress span {
+    font-size: 12px;
+    font-weight: 500;
+    color: #a6e3a1;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(17, 17, 27, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: #1e1e2e;
+    border-radius: 12px;
+    border: 1px solid #313244;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #313244;
+}
+
+.modal-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #89b4fa;
+}
+
+.modal-close {
+    background: transparent;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #f9e2af;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: #313244;
+    border: 1px solid #45475a;
+    border-radius: 6px;
+    color: #cdd6f4;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #89b4fa;
+}
+
+.modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #313244;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    background: #11111b;
+    border-top: 1px solid #313244;
+    font-size: 12px;
+}
+
+.status-indicators {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.connection-status {
+    color: #a6e3a1;
+    font-size: 8px;
+}
+
+.time-display {
+    color: #6c7086;
+    font-family: 'SF Mono', Consolas, monospace;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #181825;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #313244;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #45475a;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.task-card,
+.history-item {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .control-buttons {
+        flex-direction: column;
+    }
+    
+    .control-buttons .btn {
+        width: 100%;
+    }
+}

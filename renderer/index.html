@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warp Task Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <span class="app-icon">🎯</span>
+                <h1 class="app-title">Warp Task Tracker</h1>
+            </div>
+            <div class="header-controls">
+                <button class="btn-icon" id="minimizeBtn" title="Minimize">−</button>
+                <button class="btn-icon" id="closeBtn" title="Close">×</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Current Task Section -->
+            <section class="current-task-section">
+                <div class="section-header">
+                    <h2>Current Task</h2>
+                    <div class="task-switcher">
+                        <select id="taskSwitcher" class="task-select">
+                            <option value="">Select a task...</option>
+                        </select>
+                        <button class="btn btn-secondary" id="refreshTasksBtn">🔄 Scan Warp Windows</button>
+                    </div>
+                </div>
+                
+                <div class="current-task" id="currentTaskDisplay">
+                    <!-- Task content will be dynamically loaded -->
+                </div>
+            </section>
+
+            <!-- Task Controls -->
+            <section class="task-controls" id="taskControls" style="display: none;">
+                <div class="progress-input">
+                    <label for="progressSlider">Progress:</label>
+                    <div class="progress-slider-container">
+                        <input type="range" id="progressSlider" min="0" max="100" step="1" value="0">
+                        <span class="progress-value" id="progressValue">0%</span>
+                    </div>
+                </div>
+                
+                <div class="progress-message">
+                    <label for="progressMessage">Update Message (optional):</label>
+                    <input type="text" id="progressMessage" placeholder="Describe your progress...">
+                </div>
+                
+                <div class="control-buttons">
+                    <button class="btn btn-success" id="updateProgressBtn">Update Progress</button>
+                    <button class="btn btn-warning" id="stopTaskBtn">Stop Task</button>
+                    <button class="btn btn-primary" id="completeTaskBtn">Complete Task</button>
+                </div>
+            </section>
+
+            <!-- Task History -->
+            <section class="task-history-section">
+                <div class="section-header">
+                    <h2>Recent Tasks</h2>
+                    <button class="btn btn-secondary" id="refreshHistoryBtn">Refresh</button>
+                </div>
+                
+                <div class="task-history" id="taskHistory">
+                    <!-- History will be dynamically loaded -->
+                </div>
+            </section>
+        </main>
+
+        <!-- New Task Modal -->
+        <div class="modal-overlay" id="newTaskModal" style="display: none;">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>Create New Task</h3>
+                    <button class="btn-icon modal-close" id="modalCloseBtn">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="taskName">Task Name *</label>
+                        <input type="text" id="taskName" placeholder="Enter task name..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription">Description</label>
+                        <textarea id="taskDescription" placeholder="Optional task description..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="cancelTaskBtn">Cancel</button>
+                    <button class="btn btn-primary" id="createTaskBtn">Create Task</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <span class="status-text" id="statusText">Ready</span>
+            <div class="status-indicators">
+                <span class="connection-status" id="connectionStatus">●</span>
+                <span class="time-display" id="timeDisplay"></span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

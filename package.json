@@ -8,10 +8,13 @@
   },
   "scripts": {
     "start": "node src/index.js",
+    "gui": "electron src/electron-main.js",
     "dev": "nodemon src/index.js",
+    "dev-gui": "NODE_ENV=development electron src/electron-main.js",
     "test": "jest",
     "lint": "eslint src/",
-    "build": "pkg . --out-path dist/"
+    "build": "pkg . --out-path dist/",
+    "build-gui": "electron-builder"
   },
   "keywords": [
     "warp",
@@ -24,13 +27,16 @@
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^5.3.0",
-    "commander": "^11.0.0",
-    "inquirer": "^9.2.12",
-    "boxen": "^7.1.1",
+    "boxen": "^5.1.2",
+    "canvas": "^3.2.0",
+    "chalk": "^4.1.2",
     "cli-progress": "^3.12.0",
-    "node-notifier": "^10.0.1",
-    "fs-extra": "^11.1.1"
+    "commander": "^11.0.0",
+    "electron": "^25.9.8",
+    "electron-builder": "^26.0.12",
+    "fs-extra": "^11.1.1",
+    "inquirer": "^9.2.12",
+    "node-notifier": "^10.0.1"
   },
   "devDependencies": {
     "eslint": "^8.50.0",
